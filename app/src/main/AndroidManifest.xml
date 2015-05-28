@@ -27,6 +27,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.chaka.birthdays.MainActivity" />
         </activity>
+        <activity
+            android:name=".FrescoList"
+            android:label="@string/title_activity_fresco_list" >
+        </activity>
+        <activity
+            android:name=".PicassoList"
+            android:label="@string/title_activity_picasso_list" >
+        </activity>
+        <activity
+            android:name=".PicassoDetailsActivity"
+            android:label="@string/title_activity_picasso_details" >
+        </activity>
+        <activity
+            android:name=".FrescoDetailsActivity"
+            android:label="@string/title_activity_fresco_details" >
+        </activity>
     </application>
 
 </manifest>

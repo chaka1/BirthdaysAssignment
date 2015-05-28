@@ -1,43 +1,43 @@
 package com.example.chaka.birthdays;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Cache;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class PicassoList extends ActionBarActivity {
 
     public static final String URL_BIRTHDAY = "https://cleverbug-staging.appspot.com/_ah/api/friends/v1/friends.list.test";
 
@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private BirthdayAdapter birthdayAdapter;
 
     LinearLayoutManager llm;
+
+    Context mContext;
 
     private static final String tag_id = "id";
     private static final String tag_name = "name";
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = this;
+
         birthdayRecyclerView = (RecyclerView) findViewById(R.id.rvBirthdayList);
 
         birthdayList = new ArrayList<>();
@@ -83,24 +87,23 @@ public class MainActivity extends AppCompatActivity {
 
         birthdayRecyclerView.addOnItemTouchListener(
                 new RecyclerClickerListener(this, new RecyclerClickerListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                    @Override public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(PicassoList.this, PicassoDetailsActivity.class);
                         //intent.putExtra(DetailsActivity.ID, Contact.CONTACTS[position].getId());
-                        intent.putExtra("Birthday", birthdayList.get(position));
+                        intent.putExtra("Birthday",birthdayList.get(position));
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                                 // the context of the activity
-                                MainActivity.this,
+                                PicassoList.this,
 
                                 // For each shared element, add to this method a new Pair item,
                                 // which contains the reference of the view we are transitioning *from*,
                                 // and the value of the transitionName attribute
-                                new Pair<View, String>(view.findViewById(R.id.imgNetwork),
+                                new Pair<View, String>(view.findViewById(R.id.img),
                                         getString(R.string.transition_name_circle)),
                                 new Pair<View, String>(view.findViewById(R.id.nameText),
                                         getString(R.string.transition_name_name))
                         );
-                        ActivityCompat.startActivity(MainActivity.this, intent, options.toBundle());
+                        ActivityCompat.startActivity(PicassoList.this, intent, options.toBundle());
                     }
                 }));
 
@@ -212,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+
         Intent intent;
         if(id == R.id.action_fresco){
             intent = new Intent(this,FrescoList.class);
@@ -230,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -259,18 +264,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ButtonViewHolder pinViewHolder,int i) {
             final Birthday cd = pinList.get(i);
-            ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-
-            // If you are using NetworkImageView
-            pinViewHolder.vPhoto.setImageUrl(cd.getPicture(), imageLoader);
-
+            Picasso.with(mContext).load(cd.getPicture()).into(pinViewHolder.vPhoto);
             pinViewHolder.vNameText.setText(cd.getName());
             pinViewHolder.vIdText.setText(cd.getId());
-
-
-
-
 
         }
 
@@ -281,14 +278,14 @@ public class MainActivity extends AppCompatActivity {
 
             itemView = LayoutInflater.
                     from(viewGroup.getContext()).
-                    inflate(R.layout.card_birthday, viewGroup, false);
+                    inflate(R.layout.card_picasso_birthday, viewGroup, false);
 
             return new ButtonViewHolder(itemView);
         }
 
         public class ButtonViewHolder extends RecyclerView.ViewHolder {
 
-            protected NetworkImageView vPhoto;
+            protected ImageView vPhoto;
             protected TextView vNameText;
             protected TextView vIdText;
             protected View vView;
@@ -296,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
             public ButtonViewHolder(View v) {
                 super(v);
-                vPhoto = (NetworkImageView)v.findViewById(R.id.imgNetwork);
+                vPhoto = (ImageView)v.findViewById(R.id.img);
                 vNameText = (TextView)v.findViewById(R.id.nameText);
                 vIdText = (TextView)v.findViewById(R.id.idText);
                 vView = v;

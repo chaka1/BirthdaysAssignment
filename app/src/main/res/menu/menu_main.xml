@@ -3,4 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_fresco" android:title="list using fresco"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_picasso" android:title="list using picasso"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_volley" android:title="list using volley"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
